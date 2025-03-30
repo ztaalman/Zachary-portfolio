@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CAD Consultant - Zachary T.</title>
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --secondary: #0D9488;
+            --accent: #F97316;
+            --light-gray: #F1F5F9;
+            --dark-gray: #1F2937;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: rgba(31, 41, 55, 0.9);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-toggle {
+            display: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 30px;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 150px 0 80px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 80px 0;
+        }
+        
+        .tool-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .tool-tabs {
+            display: flex;
+            background-color: var(--dark-gray);
+        }
+        
+        .tool-tab {
+            padding: 15px 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .tool-tab.active {
+            background-color: var(--accent);
+        }
+        
+        .tool-content {
+            padding: 40px;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--secondary);
+            border-radius: 10px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            background-color: rgba(13, 148, 136, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .upload-text h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .upload-text p {
+            color: #64748b;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .option-group {
+            margin-bottom: 30px;
+        }
+        
+        .option-group h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            background-color: rgba(13, 148, 136, 0.1);
+        }
+        
+        .radio-option.selected {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .radio-option input {
+            margin-right: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: transparent;
+            color: var(--accent);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            color: var(--secondary);
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+            margin-top: 50px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-header h2 {
+            color: var(--primary);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .model-viewer {
+            background-color: var(--dark-gray);
+            border-radius: 10px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .recommendations {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .recommendation-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .recommendation-item h4 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .recommendation-item h4 span {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+        
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 0;
+            background-color: #f8fafc;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .pricing-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .pricing-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .pricing-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-period {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .pricing-features {
+            padding: 30px;
+        }
+        
+        .pricing-features ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features ul li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .pricing-features ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+        
+        .pricing-card.featured {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .pricing-card.featured .pricing-header {
+            background-color: var(--accent);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-gray);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--dark-gray);
+                flex-direction: column;
+                align-items: center;
+                padding: 40px 0;
+                transition: left 0.3s ease;
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .nav-menu li {
+                margin: 15px 0;
+            }
+            
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="header-container container">
+            <a href="#" class="logo">Zachary<span>T</span></a>
+            <button class="nav-toggle">☰</button>
+            <ul class="nav-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#" class="active">CAD Consultant</a></li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>AI CAD Consultant</h1>
+            <p>Upload your CAD files for AI-powered analysis and receive optimization recommendations based on your specific manufacturing method and application.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="tool-container">
+                <div class="tool-tabs">
+                    <div class="tool-tab active">Upload & Analyze</div>
+                    <div class="tool-tab">Results</div>
+                    <div class="tool-tab">History</div>
+                </div>
+                <div class="tool-content">
+                    <div class="upload-area">
+                        <div class="upload-icon">
+                            <i>📁</i>
+                        </div>
+                        <div class="upload-text">
+                            <h3>Upload Your CAD File</h3>
+                            <p>Drag and drop your file here or click to browse</p>
+                            <p>Supported formats: .STEP, .IGES, .STL, .OBJ, .F3D, .SLDPRT</p>
+                        </div>
+                    </div>
+                    
+                    <div class="options-grid">
+                        <div>
+                            <div class="option-group">
+                                <h3>Manufacturing Method</h3>
+                                <div class="radio-group">
+                                    <label class="radio-option selected">
+                                        <input type="radio" name="manufacturing" checked> 3D Printing (FDM)
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="manufacturing"> 3D Printing (SLA)
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="manufacturing"> CNC Machining
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="manufacturing"> Sheet Metal
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="manufacturing"> Injection Molding
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="option-group">
+                                <h3>Application</h3>
+                                <div class="radio-group">
+                                    <label class="radio-option selected">
+                                        <input type="radio" name="application" checked> General Purpose
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="application"> Aerospace
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="application"> Automotive
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="application"> Construction
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="application"> Medical
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="form-group">
+                                <label for="material">Material</label>
+                                <select id="material">
+                                    <option>PLA</option>
+                                    <option>ABS</option>
+                                    <option>PETG</option>
+                                    <option>TPU</option>
+                                    <option>Nylon</option>
+                                    <option>Aluminum</option>
+                                    <option>Steel</option>
+                                    <option>Other (specify in notes)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tolerance">Required Tolerance (mm)</label>
+                                <input type="number" id="tolerance" placeholder="e.g. 0.1" step="0.01" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notes">Additional Requirements</label>
+                                <textarea id="notes" placeholder="Describe any specific requirements or constraints..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button class="btn btn-secondary">Save Settings</button>
+                        <button class="btn">Analyze Design</button>
+                    </div>
+                    
+                    <!-- Results Section (Initially Hidden) -->
+                    <div class="results-section">
+                        <div class="results-header">
+                            <h2>Analysis Results</h2>
+                            <div>
+                                <button class="btn btn-secondary">Download Report</button>
+                                <button class="btn">Share Results</button>
+                            </div>
+                        </div>
+                        
+                        <div class="results-grid">
+                            <div class="model-viewer">
+                                <p>3D Model Viewer</p>
+                                <!-- 3D model viewer would be implemented here -->
+                            </div>
+                            
+                            <div class="recommendations">
+                                <h3>Optimization Recommendations</h3>
+                                
+                                <div class="recommendation-item">
+                                    <h4><span>1</span> Wall Thickness Adjustment</h4>
+                                    <p>Current minimum wall thickness (0.8mm) is below recommended value for FDM printing with PLA. Increase to at least 1.2mm for better structural integrity.</p>
+                                </div>
+                                
+                                <div class="recommendation-item">
+                                    <h4><span>2</span> Support Structure Requirements</h4>
+                                    <p>Overhangs detected at coordinates [X:45, Y:20, Z:15]. Consider adding chamfers or 45° angles to reduce support material needs.</p>
+                                </div>
+                                
+                                <div class="recommendation-item">
+                                    <h4><span>3</span> Print Orientation</h4>
+                                    <p>Recommended orientation: Z-axis aligned with the longest dimension to minimize layer lines on critical surfaces.</p>
+                                </div>
+                                
+                                <div class="recommendation-item">
+                                    <h4><span>4</span> Infill Optimization</h4>
+                                    <p>Gyroid infill at 15% density recommended for optimal strength-to-weight ratio for this application.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+        <div class="container">
+            <h2 class="section-title">Pricing Plans</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Pay-Per-Analysis</h3>
+                        <div class="pricing-price">$29</div>
+                        <div class="pricing-period">per CAD file</div>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li>Full AI analysis of one CAD file</li>
+                            <li>Detailed optimization recommendations</li>
+                            <li>Downloadable report</li>
+                            <li>One revision included</li>
+                            <li>Email support</li>
+                        </ul>
+                        <a href="#" class="btn" style="display: block; text-align: center;">Get Started</a>
+                    </div>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-header">
+                        <h3>Professional</h3>
+                        <div class="pricing-price">$99</div>
+                        <div class="pricing-period">per month</div>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li>Unlimited CAD file analyses</li>
+                            <li>Advanced optimization algorithms</li>
+                            <li>Priority processing</li>
+                            <li>Unlimited revisions</li>
+                            <li>Custom material library</li>
+                            <li>Priority email & phone support</li>
+                        </ul>
+                        <a href="#" class="btn" style="display: block; text-align: center;">Subscribe Now</a>
+                    </div>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <div class="pricing-price">$499</div>
+                        <div class="pricing-period">per month</div>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li>Everything in Professional plan</li>
+                            <li>Team collaboration features</li>
+                            <li>API access for integration</li>
+                            <li>Custom analysis parameters</li>
+                            <li>Dedicated account manager</li>
+                            <li>Training and onboarding</li>
+                        </ul>
+                        <a href="#" class="btn" style="display: block; text-align: center;">Contact Sales</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Zachary T.</h4>
+                    <p>Engineering solutions through AI and technical expertise.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">CAD Consultant</a></li>
+                        <li><a href="#">Portfolio</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">AI CAD Consultant</a></li>
+                        <li><a href="#">3D Printing Optimization</a></li>
+                        <li><a href="#">CNC & Manufacturing</a></li>
+                        <li><a href="#">Aerospace Applications</a></li>
+                        <li><a href="#">Construction Components</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>Chicago, Illinois</li>
+                        <li>Email: contact@example.com</li>
+                        <li>LinkedIn: <a href="https://www.linkedin.com/in/zachary-taalman/" target="_blank">Zachary Taalman</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Zachary T. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JavaScript for navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            navToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+            });
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.backgroundColor = 'rgba(31, 41, 55, 1)';
+                    header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.backgroundColor = 'rgba(31, 41, 55, 0.9)';
+                    header.style.boxShadow = 'none';
+                }
+            });
+            
+            // Show results section on button click (for demo purposes)
+            const analyzeBtn = document.querySelector('.btn-container .btn:last-child');
+            const resultsSection = document.querySelector('.results-section');
+            
+            analyzeBtn.addEventListener('click', function() {
+                resultsSection.style.display = 'block';
+                // Scroll to results
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
